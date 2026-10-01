@@ -1,0 +1,7 @@
+{
+  "name": "GigaPWM",
+  "version": "0.1.0",
+  "description": "Configurable-frequency PWM for the Arduino GIGA R1 (mbed core)",
+  "frameworks": "arduino",
+  "platforms": "ststm32"
+}
