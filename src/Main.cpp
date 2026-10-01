@@ -5,7 +5,6 @@
 
 void setup()
 {
-    // Motors first, so outputs are in a known (stopped) state immediately.
     bool pwmOk = motorInit();
 
     rosInit();

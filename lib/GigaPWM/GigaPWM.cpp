@@ -1,5 +1,4 @@
 #include "GigaPWM.h"
-
 #include <mbed.h>
 #include "pinDefinitions.h"
 

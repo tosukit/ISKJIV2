@@ -1,26 +1,15 @@
 #include "MotorControl.h"
 #include "GigaPWM.h"
 
-// -----------------------------
-// Configuration
-// -----------------------------
-// CHECK THESE AGAINST THE GIGA PINOUT: PWM pins must be PWM-capable.
 static const uint8_t DRIVE_PWM_PIN = 9;
 static const uint8_t DRIVE_DIR_PIN = 22;
 
 static const uint8_t EXC_PWM_PIN = 10;
 static const uint8_t EXC_DIR_PIN = 23;
-
-// Trade-off: higher frequency = quieter but fewer duty steps (~1e6/f steps).
 static const uint32_t PWM_FREQ_HZ = 5000;
 static const uint8_t  PWM_BITS    = 12;
-
-// Max change in output, in % per second. 400 => full reversal takes 0.5 s.
 static const float RAMP_PCT_PER_S = 400.0f;
 
-// -----------------------------
-// Motor state
-// -----------------------------
 struct Motor
 {
     GigaPWM pwm;
@@ -34,8 +23,7 @@ static Motor excMotor;
 
 static void writeMotor(Motor& m)
 {
-    // The ramp always passes through 0 before the sign changes, so DIR only
-    // flips when duty is ~0.
+
     digitalWrite(m.dirPin, m.current >= 0.0f ? HIGH : LOW);
     m.pwm.setPercent(fabsf(m.current));
 }
@@ -61,9 +49,6 @@ static float sanitize(float speed)
     return constrain(speed, -100.0f, 100.0f);
 }
 
-// -----------------------------
-// Public API
-// -----------------------------
 bool motorInit()
 {
     driveMotor.dirPin = DRIVE_DIR_PIN;
@@ -90,7 +75,7 @@ void motorUpdate()
     float dt = (now - lastUs) * 1e-6f;
     lastUs = now;
 
-    if (dt > 0.1f) dt = 0.1f;   // avoid a big jump after a stall
+    if (dt > 0.1f) dt = 0.1f;   
 
     rampMotor(driveMotor, dt);
     rampMotor(excMotor, dt);

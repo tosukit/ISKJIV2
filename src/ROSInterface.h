@@ -3,15 +3,14 @@
 
 #include <Arduino.h>
 
-// USB-serial link to the Raspberry Pi (which runs the ROS 2 bridge node).
-// Protocol: one ASCII line per command, "<drive>,<excavation>\n", each -100..100.
+
 
 void rosInit();
-void rosUpdate();               // call every loop(); non-blocking
+void rosUpdate();               
 
-float getDriveCommand();        // 0 if commands are stale
-float getExcavationCommand();   // 0 if commands are stale
-bool  rosCommandsActive();      // true while valid commands keep arriving
+float getDriveCommand();        
+float getExcavationCommand();   
+bool  rosCommandsActive();      
 
 #endif
 

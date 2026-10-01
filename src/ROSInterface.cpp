@@ -2,7 +2,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-// If no valid line arrives for this long, both commands drop to 0.
 static const uint32_t CMD_TIMEOUT_MS = 500;
 
 static float driveCommand = 0.0f;
@@ -19,8 +18,6 @@ void rosInit()
 {
     Serial.begin(115200);
 
-    // Wait for a USB host, but never forever: the robot must still boot
-    // when it is powered from a battery with no computer attached.
     uint32_t t0 = millis();
     while (!Serial && (millis() - t0) < 2000)
     {
@@ -28,7 +25,6 @@ void rosInit()
     }
 }
 
-// Parses "<float>,<float>" and rejects anything else.
 static bool parseLine(const char* s, float& a, float& b)
 {
     char* end;
@@ -60,7 +56,7 @@ static bool parseLine(const char* s, float& a, float& b)
 
 void rosUpdate()
 {
-    // Drain everything that has arrived, so latency never builds up.
+   
     while (Serial.available() > 0)
     {
         int c = Serial.read();
@@ -91,7 +87,7 @@ void rosUpdate()
         }
     }
 
-    // Failsafe
+
     if (active && (millis() - lastRxMs) > CMD_TIMEOUT_MS)
     {
         driveCommand = 0.0f;
