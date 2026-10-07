@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """ROS 2 -> Arduino GIGA serial bridge for the ISKJI motor controller.
 
 Subscribes:
@@ -66,8 +65,7 @@ class SerialBridge(Node):
             return
         self.last_open_try = now
         try:
-            # pyserial asserts DTR on open, which is what the GIGA's
-            # "while (!Serial)" waits for.
+
             self.ser = serial.Serial(self.port, self.baud, timeout=0)
             self.get_logger().info(f"Opened {self.port}")
         except (serial.SerialException, OSError) as e:
@@ -87,7 +85,7 @@ class SerialBridge(Node):
 
         try:
             self.ser.write(f"{d:.2f},{e:.2f}\n".encode("ascii"))
-            self.ser.reset_input_buffer()  # discard the GIGA's text output
+            self.ser.reset_input_buffer() 
         except (serial.SerialException, OSError) as ex:
             self.get_logger().error(f"Serial write failed: {ex}")
             try:
