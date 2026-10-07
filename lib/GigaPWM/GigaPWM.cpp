@@ -2,8 +2,10 @@
 #include <mbed.h>
 #include "pinDefinitions.h"
 
+static const uint32_t MAX_FREQUENCY_HZ = 1000000UL;  
+
 GigaPWM::GigaPWM()
-    : _pwm(nullptr), _pin(0), _resolution(0), _frequency(0), _top(0)
+    : _pwm(nullptr), _pin(0), _resolution(0), _frequency(0), _periodUs(0), _top(0)
 {
 }
 
@@ -14,7 +16,8 @@ GigaPWM::~GigaPWM()
 
 bool GigaPWM::begin(uint8_t pin, uint32_t frequency, uint8_t resolutionBits)
 {
-    if (frequency == 0 || resolutionBits < 1 || resolutionBits > 16)
+    if (frequency == 0 || frequency > MAX_FREQUENCY_HZ ||
+        resolutionBits < 1 || resolutionBits > 16)
     {
         return false;
     }
@@ -27,12 +30,20 @@ bool GigaPWM::begin(uint8_t pin, uint32_t frequency, uint8_t resolutionBits)
         return false;
     }
 
+    
+    uint32_t periodUs = (1000000UL + frequency / 2UL) / frequency;
+    if (periodUs < 1)
+    {
+        periodUs = 1;
+    }
+
     _pwm = new mbed::PwmOut(name);
-    _pwm->period_us(1000000UL / frequency);
+    _pwm->period_us((int)periodUs);
     _pwm->write(0.0f);
 
     _pin = pin;
-    _frequency = frequency;
+    _periodUs = periodUs;
+    _frequency = 1000000UL / periodUs;    
     _resolution = resolutionBits;
     _top = (1UL << resolutionBits) - 1UL;
     return true;
@@ -45,6 +56,10 @@ void GigaPWM::end()
         _pwm->write(0.0f);
         delete _pwm;
         _pwm = nullptr;
+
+        
+        pinMode(_pin, OUTPUT);
+        digitalWrite(_pin, LOW);
     }
 }
 
@@ -68,7 +83,7 @@ bool GigaPWM::setPercent(float percent)
     {
         return false;
     }
-    if (!(percent >= 0.0f))   // also catches NaN
+    if (!(percent >= 0.0f))   
     {
         percent = 0.0f;
     }
@@ -79,3 +94,4 @@ bool GigaPWM::setPercent(float percent)
     _pwm->write(percent / 100.0f);
     return true;
 }
+
