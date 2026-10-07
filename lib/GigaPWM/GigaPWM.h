@@ -5,6 +5,7 @@
 
 namespace mbed { class PwmOut; }
 
+
 class GigaPWM
 {
 public:
@@ -14,19 +15,26 @@ public:
     GigaPWM(const GigaPWM&) = delete;
     GigaPWM& operator=(const GigaPWM&) = delete;
 
+    
     bool begin(uint8_t pin, uint32_t frequency, uint8_t resolutionBits = 12);
+
+    
     void end();
 
     bool setDuty(uint32_t duty);      
     bool setPercent(float percent);   
-    uint32_t getTop() const { return _top; }
-    bool isRunning() const { return _pwm != nullptr; }
+
+    uint32_t getTop() const       { return _top; }
+    uint32_t getFrequency() const { return _frequency; }  
+    uint32_t getPeriodUs() const  { return _periodUs; }
+    bool isRunning() const        { return _pwm != nullptr; }
 
 private:
     mbed::PwmOut* _pwm;
     uint8_t  _pin;
     uint8_t  _resolution;
     uint32_t _frequency;
+    uint32_t _periodUs;
     uint32_t _top;
 };
 

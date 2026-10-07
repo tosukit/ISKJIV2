@@ -100,3 +100,4 @@ float getDriveCommand()      { return driveCommand; }
 float getExcavationCommand() { return excavationCommand; }
 bool  rosCommandsActive()    { return active; }
 
+
