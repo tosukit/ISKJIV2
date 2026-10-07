@@ -98,4 +98,3 @@ void stopAllMotors()
     stopDrive();
     stopExcavation();
 }
-
