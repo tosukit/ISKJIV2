@@ -17,8 +17,8 @@ public:
     bool begin(uint8_t pin, uint32_t frequency, uint8_t resolutionBits = 12);
     void end();
 
-    bool setDuty(uint32_t duty);      // 0 .. getTop()
-    bool setPercent(float percent);   // 0 .. 100
+    bool setDuty(uint32_t duty);      
+    bool setPercent(float percent);   
     uint32_t getTop() const { return _top; }
     bool isRunning() const { return _pwm != nullptr; }
 
